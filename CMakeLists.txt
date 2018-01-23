@@ -19,6 +19,21 @@ ELSE()
 
 project(chaiscript)
 
+include(CMakePackageConfigHelpers)
+set(CHAISCRIPT_CMAKE_CONFIG_DIR          
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_config")
+set(CHAISCRIPT_CMAKE_CONFIG_TEMPLATE     
+    "cmake/ChaiScriptConfig.cmake.in")
+set(CHAISCRIPT_CMAKE_PROJECT_CONFIG_FILE 
+    "${CHAISCRIPT_CMAKE_CONFIG_DIR}/${PROJECT_NAME}Config.cmake")
+set(CHAISCRIPT_CONFIG_INSTALL_DIR        
+    "lib/cmake/${PROJECT_NAME}")
+configure_package_config_file(
+    ${CHAISCRIPT_CMAKE_CONFIG_TEMPLATE}
+    ${CHAISCRIPT_CMAKE_PROJECT_CONFIG_FILE}
+    INSTALL_DESTINATION ${CHAISCRIPT_CONFIG_INSTALL_DIR}
+)
+
 option(MULTITHREAD_SUPPORT_ENABLED "Multithreaded Support Enabled" TRUE)
 
 
