@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 include("cmake/HunterGate.cmake")
 HunterGate(
@@ -17,22 +17,43 @@ ELSE()
   # Your regular CMakeLists configuration here
 
 
-project(chaiscript)
+project(chaiscript VERSION 6.0.0)
 
 include(CMakePackageConfigHelpers)
-set(CHAISCRIPT_CMAKE_CONFIG_DIR          
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake_config")
-set(CHAISCRIPT_CMAKE_CONFIG_TEMPLATE     
-    "cmake/ChaiScriptConfig.cmake.in")
-set(CHAISCRIPT_CMAKE_PROJECT_CONFIG_FILE 
-    "${CHAISCRIPT_CMAKE_CONFIG_DIR}/${PROJECT_NAME}Config.cmake")
-set(CHAISCRIPT_CONFIG_INSTALL_DIR        
-    "lib/cmake/${PROJECT_NAME}")
-configure_package_config_file(
-    ${CHAISCRIPT_CMAKE_CONFIG_TEMPLATE}
-    ${CHAISCRIPT_CMAKE_PROJECT_CONFIG_FILE}
-    INSTALL_DESTINATION ${CHAISCRIPT_CONFIG_INSTALL_DIR}
+set(config_install_dir "lib/cmake/${PROJECT_NAME}")
+set(include_install_dir "include")
+
+set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
+
+set(version_config "${generated_dir}/${PROJECT_NAME}ConfigVersion.cmake")
+set(project_config "${generated_dir}/${PROJECT_NAME}Config.cmake")
+set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
+set(namespace "${PROJECT_NAME}::")
+
+include(CMakePackageConfigHelpers)
+
+# Use:
+#   * PROJECT_VERSION
+write_basic_package_version_file(
+    "${version_config}" COMPATIBILITY SameMajorVersion
 )
+
+# Use variables:
+#   * TARGETS_EXPORT_NAME
+#   * PROJECT_NAME
+configure_package_config_file(
+    "cmake/Config.cmake.in"
+    "${project_config}"
+    INSTALL_DESTINATION "${config_install_dir}"
+)
+
+install(
+    FILES "${project_config}" "${version_config}"
+    DESTINATION "${config_install_dir}"
+)
+
+
+
 
 option(MULTITHREAD_SUPPORT_ENABLED "Multithreaded Support Enabled" TRUE)
 
