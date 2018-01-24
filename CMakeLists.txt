@@ -19,6 +19,10 @@ ELSE()
 
 project(chaiscript VERSION 6.0.0)
 
+
+set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
+set(namespace "${PROJECT_NAME}::")
+
 include(CMakePackageConfigHelpers)
 set(config_install_dir "lib/cmake/${PROJECT_NAME}")
 set(include_install_dir "include")
