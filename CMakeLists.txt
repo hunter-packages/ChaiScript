@@ -55,6 +55,12 @@ install(
     FILES "${project_config}" "${version_config}"
     DESTINATION "${config_install_dir}"
 )
+install( 
+    EXPORT "${TARGETS_EXPORT_NAME}" 
+    NAMESPACE "${namespace}"
+    DESTINATION "${config_install_dir}"
+)
+
 
 
 
@@ -545,6 +551,3 @@ install(
     LIBRARY  DESTINATION "lib"
     INCLUDES DESTINATION "include"
 )
-
-
-
