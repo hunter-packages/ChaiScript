@@ -546,8 +546,9 @@ install(FILES "${chaiscript_BINARY_DIR}/lib/pkgconfig/chaiscript.pc"
 ENDIF()
 
 install(
-    TARGETS chaiscript_stdlib-${CHAI_VERSION} ${MODULES} 
+    TARGETS ${CHAISCRIPT_LIBS} ${MODULES} 
     EXPORT "${TARGETS_EXPORT_NAME}" 
+    ARCHIVE  DESTINATION "lib"
     LIBRARY  DESTINATION "lib"
     INCLUDES DESTINATION "include"
 )
