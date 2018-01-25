@@ -58,7 +58,6 @@ install(
 
 
 
-
 option(MULTITHREAD_SUPPORT_ENABLED "Multithreaded Support Enabled" TRUE)
 
 
@@ -538,6 +537,14 @@ configure_file(contrib/pkgconfig/chaiscript.pc.in lib/pkgconfig/chaiscript.pc @O
 install(FILES "${chaiscript_BINARY_DIR}/lib/pkgconfig/chaiscript.pc"
         DESTINATION lib/pkgconfig)
 
-    
 ENDIF()
+
+install(
+    TARGETS chaiscript_stdlib-${CHAI_VERSION} ${MODULES} 
+    EXPORT "${TARGETS_EXPORT_NAME}" 
+    LIBRARY  DESTINATION "lib"
+    INCLUDES DESTINATION "include"
+)
+
+
 
