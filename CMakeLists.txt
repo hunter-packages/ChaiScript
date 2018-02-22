@@ -302,8 +302,12 @@ set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${LINKER_FLAGS}")
 add_library(stdlib STATIC static_libs/chaiscript_stdlib.cpp)
 add_library(parser STATIC static_libs/chaiscript_parser.cpp)
 
-add_library(chaiscript_stdlib-${CHAI_VERSION} MODULE src/chaiscript_stdlib_module.cpp)
-target_link_libraries(chaiscript_stdlib-${CHAI_VERSION} ${LIBS} Threads::Threads)
+add_library(chaiscript MODULE src/chaiscript_stdlib_module.cpp)
+set_target_properties(chaiscript PROPERTIES 
+                                 OUTPUT_NAME chaiscript_stdlib-${CHAI_VERSION}
+                     )
+target_link_libraries(chaiscript ${LIBS} Threads::Threads)
+
 
 set(CHAISCRIPT_LIBS stdlib parser)
 
@@ -519,7 +523,7 @@ if(BUILD_TESTING)
   endif()
 endif()
 
-install(TARGETS chai chaiscript_stdlib-${CHAI_VERSION} ${MODULES} RUNTIME DESTINATION bin LIBRARY DESTINATION lib/chaiscript)
+install(TARGETS chai chaiscript ${MODULES} RUNTIME DESTINATION bin LIBRARY DESTINATION lib/chaiscript)
 
 install(DIRECTORY include/chaiscript DESTINATION include
   PATTERN "*.hpp"
@@ -545,7 +549,7 @@ install(FILES "${chaiscript_BINARY_DIR}/lib/pkgconfig/chaiscript.pc"
 ENDIF()
 
 install(
-    TARGETS ${CHAISCRIPT_LIBS} ${MODULES} 
+    TARGETS ${CHAISCRIPT_LIBS} ${MODULES} chaiscript
     EXPORT "${TARGETS_EXPORT_NAME}" 
     ARCHIVE  DESTINATION "lib"
     LIBRARY  DESTINATION "lib"
