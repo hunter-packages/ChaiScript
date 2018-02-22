@@ -19,7 +19,6 @@ ELSE()
 
 project(chaiscript VERSION 6.0.0)
 
-
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
 set(namespace "${PROJECT_NAME}::")
 
@@ -31,10 +30,7 @@ set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
 set(version_config "${generated_dir}/${PROJECT_NAME}-configVersion.cmake")
 set(project_config "${generated_dir}/${PROJECT_NAME}-config.cmake")
-set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
-set(namespace "${PROJECT_NAME}::")
 
-include(CMakePackageConfigHelpers)
 
 # Use:
 #   * PROJECT_VERSION
@@ -178,6 +174,10 @@ if(NOT MINGW)
   find_library(READLINE_LIBRARY NAMES readline PATH /usr/lib /usr/local/lib /opt/local/lib)
 endif()
 
+if (UNIX)
+   find_package(Threads REQUIRED)
+endif()
+
 if (UNIX AND NOT APPLE)
   find_program(VALGRIND NAMES valgrind PATH /usr/bin /usr/local/bin)
 endif()
@@ -274,7 +274,7 @@ endif()
 
 if(CMAKE_HOST_UNIX)
   if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD" AND NOT ${CMAKE_SYSTEM_NAME} MATCHES "Haiku")
-    list(APPEND LIBS "dl")
+    list(APPEND LIBS ${CMAKE_DL_LIBS})
   endif()
 
   if(MULTITHREAD_SUPPORT_ENABLED)
@@ -289,7 +289,6 @@ if(CMAKE_HOST_UNIX)
       set(LINKER_FLAGS "${LINKER_FLAGS} -pthread")
     endif()
 
-    add_definitions(-pthread)
   endif()
 
 endif()
