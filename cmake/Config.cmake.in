@@ -2,10 +2,8 @@
 
 if ( CMAKE_HOST_UNIX AND NOT MINGW ) 
     find_package(Threads REQUIRED)
-    message("Using threads: " ${Threads::Threads})
-    message("Using threads: " ${CMAKE_DL_LIBS})
-    list(APPEND libs Threads::Threads)
-    list(APPEND libs ${CMAKE_DL_LIBS})
+    add_library(Threads::Threads)
+    add_library(${CMAKE_DL_LIBS})
 endif() 
 
 include("${CMAKE_CURRENT_LIST_DIR}/@TARGETS_EXPORT_NAME@.cmake")
