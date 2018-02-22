@@ -303,7 +303,7 @@ add_library(stdlib STATIC static_libs/chaiscript_stdlib.cpp)
 add_library(parser STATIC static_libs/chaiscript_parser.cpp)
 
 add_library(chaiscript_stdlib-${CHAI_VERSION} MODULE src/chaiscript_stdlib_module.cpp)
-target_link_libraries(chaiscript_stdlib-${CHAI_VERSION} ${LIBS} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(chaiscript_stdlib-${CHAI_VERSION} ${LIBS} Threads::Threads)
 
 set(CHAISCRIPT_LIBS stdlib parser)
 

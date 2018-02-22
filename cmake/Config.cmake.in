@@ -2,6 +2,7 @@
 
 if ( CMAKE_HOST_UNIX AND NOT MINGW ) 
     find_package(Threads REQUIRED)
+    message("Using threads: " Threads::Threads)
     list(APPEND libs Threads::Threads)
     list(APPEND libs ${CMAKE_DL_LIBS})
 endif() 
