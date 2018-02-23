@@ -1,6 +1,6 @@
 @PACKAGE_INIT@
 
-if ( CMAKE_HOST_UNIX AND NOT MINGW ) 
+if ( CMAKE_HOST_UNIX AND NOT (MINGW OR CYGWIN) ) 
     find_package(Threads REQUIRED)
 endif() 
 
