@@ -551,6 +551,7 @@ install(FILES "${chaiscript_BINARY_DIR}/lib/pkgconfig/chaiscript.pc"
 
 ENDIF()
 
+message("Installing libs: ${CHAISCRIPT_LIBS} and modules: ${MODULES}")
 install(
     TARGETS ${CHAISCRIPT_LIBS} ${MODULES} chaiscript
     EXPORT "${TARGETS_EXPORT_NAME}" 
