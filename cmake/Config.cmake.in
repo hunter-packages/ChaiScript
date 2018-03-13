@@ -1,2 +1,7 @@
 @PACKAGE_INIT@
+
+if ( CMAKE_HOST_UNIX AND NOT (MINGW OR CYGWIN) ) 
+    find_package(Threads REQUIRED)
+endif() 
+
 include("${CMAKE_CURRENT_LIST_DIR}/@TARGETS_EXPORT_NAME@.cmake")

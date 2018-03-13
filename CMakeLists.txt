@@ -19,7 +19,6 @@ ELSE()
 
 project(chaiscript VERSION 6.0.0)
 
-
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
 set(namespace "${PROJECT_NAME}::")
 
@@ -31,10 +30,7 @@ set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
 set(version_config "${generated_dir}/${PROJECT_NAME}-configVersion.cmake")
 set(project_config "${generated_dir}/${PROJECT_NAME}-config.cmake")
-set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
-set(namespace "${PROJECT_NAME}::")
 
-include(CMakePackageConfigHelpers)
 
 # Use:
 #   * PROJECT_VERSION
@@ -178,6 +174,10 @@ if(NOT MINGW)
   find_library(READLINE_LIBRARY NAMES readline PATH /usr/lib /usr/local/lib /opt/local/lib)
 endif()
 
+if (UNIX)
+   find_package(Threads REQUIRED)
+endif()
+
 if (UNIX AND NOT APPLE)
   find_program(VALGRIND NAMES valgrind PATH /usr/bin /usr/local/bin)
 endif()
@@ -274,7 +274,7 @@ endif()
 
 if(CMAKE_HOST_UNIX)
   if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD" AND NOT ${CMAKE_SYSTEM_NAME} MATCHES "Haiku")
-    list(APPEND LIBS "dl")
+    list(APPEND LIBS ${CMAKE_DL_LIBS})
   endif()
 
   if(MULTITHREAD_SUPPORT_ENABLED)
@@ -289,7 +289,6 @@ if(CMAKE_HOST_UNIX)
       set(LINKER_FLAGS "${LINKER_FLAGS} -pthread")
     endif()
 
-    add_definitions(-pthread)
   endif()
 
 endif()
@@ -303,8 +302,15 @@ set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${LINKER_FLAGS}")
 add_library(stdlib STATIC static_libs/chaiscript_stdlib.cpp)
 add_library(parser STATIC static_libs/chaiscript_parser.cpp)
 
-add_library(chaiscript_stdlib-${CHAI_VERSION} MODULE src/chaiscript_stdlib_module.cpp)
-target_link_libraries(chaiscript_stdlib-${CHAI_VERSION} ${LIBS} ${CMAKE_THREAD_LIBS_INIT})
+add_library(chaiscript MODULE src/chaiscript_stdlib_module.cpp)
+set_target_properties(chaiscript PROPERTIES 
+                                 OUTPUT_NAME chaiscript_stdlib-${CHAI_VERSION}
+                     )
+target_link_libraries(chaiscript ${LIBS})
+if ( !CMAKE_HOST_WIN32 )
+    target_link_libraries(chaiscript Threads::Threads)
+endif()
+
 
 set(CHAISCRIPT_LIBS stdlib parser)
 
@@ -520,7 +526,7 @@ if(BUILD_TESTING)
   endif()
 endif()
 
-install(TARGETS chai chaiscript_stdlib-${CHAI_VERSION} ${MODULES} RUNTIME DESTINATION bin LIBRARY DESTINATION lib/chaiscript)
+install(TARGETS chai chaiscript ${MODULES} RUNTIME DESTINATION bin LIBRARY DESTINATION lib/chaiscript)
 
 install(DIRECTORY include/chaiscript DESTINATION include
   PATTERN "*.hpp"
@@ -545,8 +551,9 @@ install(FILES "${chaiscript_BINARY_DIR}/lib/pkgconfig/chaiscript.pc"
 
 ENDIF()
 
+message("Installing libs: ${CHAISCRIPT_LIBS} and modules: ${MODULES}")
 install(
-    TARGETS ${CHAISCRIPT_LIBS} ${MODULES} 
+    TARGETS ${CHAISCRIPT_LIBS} ${MODULES} chaiscript
     EXPORT "${TARGETS_EXPORT_NAME}" 
     ARCHIVE  DESTINATION "lib"
     LIBRARY  DESTINATION "lib"
